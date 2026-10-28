@@ -9,6 +9,7 @@ A collection of reusable Copilot skills and supporting scripts for Solution Arch
 - Solution Architect Project Status Review
 - SA Engagement Analysis
 - SA KPI Heatmap
+- SV-Noidia-Solution Architect KPI Performance Heatmap
 - SA Effectiveness Scorecard
 - SA Workload Dashboard
 - SAD Document Generator

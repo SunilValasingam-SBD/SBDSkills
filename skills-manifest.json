@@ -68,6 +68,23 @@
       ]
     },
     {
+      "id": "sv-noidia-solution-architect-kpi-performance-heatmap",
+      "name": "SV-Noidia-Solution Architect KPI Performance Heatmap",
+      "description": "Generate an interactive WIP KPI heatmap with SAD approval measured only for PRJ projects; ID ideas are excluded from the SAD denominator.",
+      "folder": "sv-noidia-solution-architect-kpi-performance-heatmap",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sa_kpi_heatmap.py",
+      "outputs": "sv_noidia_sa_kpi_performance_heatmap.html and sv_noidia_sa_kpi_summary.csv; SAD approval denominator includes PRJ projects only.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the source CSV/Excel export", "required": false, "type": "path" },
+        { "flag": "--exclude-sa", "prompt": "Solution Architect name(s) to exclude, comma-separated (blank = exclude Unassigned)", "required": false, "type": "repeat-csv" },
+        { "flag": "--status", "prompt": "Status value(s) to restrict to (skill default = WIP)", "required": false, "type": "repeat-csv" },
+        { "flag": "--output", "prompt": "HTML heatmap output path", "required": false, "type": "path" },
+        { "flag": "--summary-output", "prompt": "CSV summary output path", "required": false, "type": "path" }
+      ]
+    },
+    {
       "id": "sad-document-generator",
       "name": "SAD (Solution Architecture Document) Generator",
       "description": "Generate a Solution Architecture Document Word file from BRD/kickoff/SARB/questionnaire inputs, rewritten into confident executive-summary-quality prose (never raw source copy-paste), with per-requirement process diagrams and a polished swimlane-style high-level architecture diagram. Content-authoring heavy — run inside a Copilot CLI chat, not as a single script.",
