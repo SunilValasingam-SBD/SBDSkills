@@ -1,0 +1,231 @@
+{
+  "skills": [
+    {
+      "id": "app-integration-mapper",
+      "name": "Application Integration Mapper",
+      "description": "Given an Excel workbook with an applications list and an integration catalog, generate a workbook with one tab per application listing every integration where it is Initiator or Terminator.",
+      "folder": "app-integration-mapper",
+      "mode": "script",
+      "runner": "python",
+      "entry": "map_app_integrations.py",
+      "outputs": "Excel workbook with one tab per application, listing every integration where it is Initiator or Terminator.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the source Excel workbook (blank = newest .xlsx in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "--output", "prompt": "Output workbook path (blank = SA\\Outputs\\app-integration-mapper\\<input>_Integrations.xlsx)", "required": false, "type": "path" },
+        { "flag": "--apps-sheet", "prompt": "Applications sheet name (blank = ExcelApplications)", "required": false, "type": "string" },
+        { "flag": "--catalog-sheet", "prompt": "Integration catalog sheet name (blank = Integration Catalog)", "required": false, "type": "string" },
+        { "flag": "--app-name-column", "prompt": "Application name column header (blank = Application Name)", "required": false, "type": "string" },
+        { "flag": "--initiator-column", "prompt": "Initiator app column header (blank = Initiator App)", "required": false, "type": "string" },
+        { "flag": "--terminator-column", "prompt": "Terminator app column header (blank = Terminator)", "required": false, "type": "string" },
+        { "flag": "--include-empty", "prompt": "Include applications with zero integrations? (y/N)", "required": false, "type": "switch" }
+      ]
+    },
+    {
+      "id": "sa-project-status-review",
+      "name": "Solution Architect Project Status Review",
+      "description": "Analyze one Solution Architect's project status for missing SAD approvals and scenario publication status.",
+      "folder": "sa-project-status-review",
+      "mode": "script",
+      "runner": "powershell",
+      "entry": "scripts\\run-sa-project-status.ps1",
+      "outputs": "sa-project-status.csv — project-level details with SAD Approval and scenario Publication Status.",
+      "params": [
+        { "flag": "-ArchitectName", "prompt": "Exact Solution Architect value from Work Ref: Solution Architect", "required": true, "type": "string" },
+        { "flag": "-Source", "prompt": "Path to refreshed CSV (blank = newest .csv in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "-Year", "prompt": "Reporting year (blank = current year)", "required": false, "type": "string" },
+        { "flag": "-OutputDirectory", "prompt": "Output directory (blank = shared SA\\Outputs\\sa-project-status-review)", "required": false, "type": "path" }
+      ]
+    },
+    {
+      "id": "sa-engagement-analysis",
+      "name": "SA Engagement Analysis",
+      "description": "Build an interactive dashboard comparing end-to-end idea-to-project engagement with project-only engagement, by portfolio and Solution Architect.",
+      "folder": "sa-engagement-analysis",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sa_engagement_analysis.py",
+      "outputs": "Interactive HTML dashboard (charts by portfolio and by SA: E2E vs project-only engagement) plus a supporting CSV export.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the source CSV (blank = newest .csv in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "--year", "prompt": "Initiative creation year (blank = current year)", "required": false, "type": "string" },
+        { "flag": "--created-column", "prompt": "Explicit creation-date column name (blank = auto-detect)", "required": false, "type": "string" },
+        { "flag": "--sa-column", "prompt": "Explicit Solution Architect column name (blank = auto-detect)", "required": false, "type": "string" }
+      ]
+    },
+    {
+      "id": "sa-kpi-heatmap",
+      "name": "SA KPI Heatmap",
+      "description": "Generate an interactive KPI performance heatmap per Solution Architect (TechPass Created, Scenario Published, SARB Approved, SAD Approved) with click-to-drill-down.",
+      "folder": "sa-kpi-heatmap",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sa_kpi_heatmap.py",
+      "outputs": "sa_kpi_heatmap.html — interactive click-to-drill-down heatmap; sa_kpi_summary.csv — underlying KPI counts per SA.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the source CSV/Excel export (blank = newest matching file in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "--exclude-sa", "prompt": "Solution Architect name(s) to exclude, comma-separated (blank = no exclusions)", "required": false, "type": "repeat-csv" },
+        { "flag": "--status", "prompt": "Status value(s) to restrict to, comma-separated (blank = all non-cancelled)", "required": false, "type": "repeat-csv" }
+      ]
+    },
+    {
+      "id": "sad-document-generator",
+      "name": "SAD (Solution Architecture Document) Generator",
+      "description": "Generate a Solution Architecture Document Word file from BRD/kickoff/SARB/questionnaire inputs, rewritten into confident executive-summary-quality prose (never raw source copy-paste), with per-requirement process diagrams and a polished swimlane-style high-level architecture diagram. Content-authoring heavy — run inside a Copilot CLI chat, not as a single script.",
+      "folder": "sad-document-generator",
+      "mode": "assisted",
+      "note": "Run via Copilot CLI: start a chat and say 'use the sad-document-generator skill' with the inputs below; the model authors the document interactively.",
+      "outputs": "A Word (.docx) Solution Architecture Document following the SBD SAD template, with per-requirement process/sequence diagrams (images + websequencediagrams.com scripts) and a companion architecture .pptx (swimlane-style, via the swimlane-flow-diagram toolkit).",
+      "params": [
+        { "flag": "input documents", "prompt": "Paths to BRD, kickoff deck, SARB deck, questionnaire, etc.", "required": true, "type": "path-list" },
+        { "flag": "output path", "prompt": "Output .docx path (blank = '<Project Name> - Solution Architecture Document.docx')", "required": false, "type": "path" },
+        { "flag": "ardoq exports available", "prompt": "Are Ardoq Level 2 architecture diagram exports available? (y/N)", "required": false, "type": "switch" }
+      ]
+    },
+    {
+      "id": "sarb-sla-report",
+      "name": "SARB SLA Report",
+      "description": "Analyze Solution Architecture Review Board SLA performance from a CSV/SharePoint export: Met/Not-met/Not-yet-due classification, SA summary, Tuesday due-date rules.",
+      "folder": "sarb-sla-report",
+      "mode": "script",
+      "runner": "powershell",
+      "entry": "scripts\\run-sarb-sla.ps1",
+      "outputs": "analyzed-<year>-prj.csv — project-level Met/Not met/Not yet due status; summary-<year>-prj.csv — SLA % by Solution Architect.",
+      "params": [
+        { "flag": "-Source", "prompt": "Path to the refreshed CSV export (blank = newest .csv in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "-AsOfDate", "prompt": "As-of date YYYY-MM-DD (blank = today)", "required": false, "type": "string" },
+        { "flag": "-OutputDirectory", "prompt": "Output directory (blank = shared SA\\Outputs\\sarb-sla-report)", "required": false, "type": "path" }
+      ]
+    },
+    {
+      "id": "sarb-sla-reasoning",
+      "name": "SARB SLA Reasoning Analysis",
+      "description": "Explain SARB SLA misses: classify logged reasons as business-caused/ambiguous/undocumented, compute Gross vs Controllable SLA % per SA and Portfolio, with a click-to-drill-down HTML dashboard.",
+      "folder": "sarb-sla-reasoning",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sarb_sla_reasoning.py",
+      "outputs": "sarb-sla-reasoning.html — interactive click-to-drill-down dashboard (SA/Portfolio/Reason charts); sa-sla-reasoning-summary.csv, portfolio-sla-reasoning-summary.csv, reason-sla-reasoning-summary.csv, not-met-detail.csv.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the refreshed Work Queue CSV/Excel export (blank = newest matching file in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "--year", "prompt": "Created-year filter (blank = current year)", "required": false, "type": "string" },
+        { "flag": "--as-of", "prompt": "As-of date YYYY-MM-DD (blank = today)", "required": false, "type": "string" },
+        { "flag": "--output-dir", "prompt": "Output directory (blank = shared SA\\Outputs\\sarb-sla-reasoning)", "required": false, "type": "path" }
+      ]
+    },
+    {
+      "id": "swimlane-flow-diagram",
+      "name": "Swimlane Flow Diagram Generator",
+      "description": "Build a C-level-ready swimlane process flow diagram as an editable PowerPoint, from a described multi-step process across actors/lanes. Authoring-heavy — run inside a Copilot CLI chat, not as a single script.",
+      "folder": "swimlane-flow-diagram",
+      "mode": "assisted",
+      "note": "Run via Copilot CLI: start a chat and say 'use the swimlane-flow-diagram skill' with the inputs below; the model customizes and runs the template, then self-checks the render.",
+      "outputs": "An editable PowerPoint (.pptx) swimlane process flow diagram built with native shapes/connectors, visually self-checked.",
+      "params": [
+        { "flag": "process description", "prompt": "The process steps/table, broken down per actor or system", "required": true, "type": "string" },
+        { "flag": "lanes/actors", "prompt": "List of lanes/actors (systems/roles) in the process", "required": true, "type": "string" }
+      ]
+    },
+    {
+      "id": "sa-workload-dashboard",
+      "name": "SA Workload Dashboard",
+      "description": "Generate a side-by-side dashboard comparing, per Solution Architect, Worklist item counts by classification (Project/Idea/TechPass/SA NPD/NPD) against total hours spent by classification (Project/Idea/Time Off/Training/Admin-Other) from a timesheet export.",
+      "folder": "sa-workload-dashboard",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sa_workload_dashboard.py",
+      "outputs": "sa_dashboard.html — interactive two-panel stacked bar chart dashboard (Worklist counts vs. timesheet hours) per Solution Architect.",
+      "params": [
+        { "flag": "--worklist", "prompt": "Path to the Worklist CSV export", "required": true, "type": "path" },
+        { "flag": "--timesheet", "prompt": "Path to the Timesheet Excel export", "required": true, "type": "path" },
+        { "flag": "--exclude-sa", "prompt": "Solution Architect(s) to exclude, comma-separated (blank = no exclusions)", "required": false, "type": "repeat-csv" },
+        { "flag": "--lookback-days", "prompt": "Lookback window in days for closed Worklist items (blank = 28)", "required": false, "type": "string" },
+        { "flag": "--timeoff-project-id", "prompt": "Organization-specific timesheet Project ID for time off/training/admin (set if applicable)", "required": false, "type": "string" },
+        { "flag": "--output-dir", "prompt": "Output directory (blank = shared SA\\Outputs\\sa-workload-dashboard)", "required": false, "type": "path" }
+      ]
+    },
+    {
+      "id": "sa-effectiveness-scorecard",
+      "name": "SA Effectiveness Scorecard",
+      "description": "Generate an interactive SA Effectiveness Scorecard combining a Worklist CSV export with a Timesheet Excel export: ranks SAs by % of time on tangible delivery work (Project/Idea/TechPass) vs internal/NPD work (SA NPD/NPD) vs admin/overhead, with click-to-drill-down into underlying Worklist items.",
+      "folder": "sa-effectiveness-scorecard",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sa_effectiveness_scorecard.py",
+      "outputs": "sa-effectiveness-scorecard.html — interactive leaderboard + click-to-drill-down scorecard; sa-effectiveness-summary.csv — ranked per-SA tier hours/percentages.",
+      "params": [
+        { "flag": "--worklist", "prompt": "Path to the Worklist CSV export", "required": true, "type": "path" },
+        { "flag": "--timesheet", "prompt": "Path to the Timesheet Excel export", "required": true, "type": "path" },
+        { "flag": "--exclude-sa", "prompt": "Solution Architect(s) to exclude, comma-separated (blank = no exclusions)", "required": false, "type": "repeat-csv" },
+        { "flag": "--idea-hours-per-week", "prompt": "Imputed hours/week per active Idea (blank = 1)", "required": false, "type": "string" },
+        { "flag": "--techpass-hours-per-week", "prompt": "Imputed hours/week per active TechPass (blank = 2)", "required": false, "type": "string" },
+        { "flag": "--sa-npd-hours-per-week", "prompt": "Imputed hours/week per active SA NPD item (blank = 1)", "required": false, "type": "string" },
+        { "flag": "--npd-hours-per-week", "prompt": "Imputed hours/week per active NPD item (blank = 1)", "required": false, "type": "string" },
+        { "flag": "--timeoff-project-id", "prompt": "Organization-specific timesheet Project ID for time off/training/admin (set if applicable)", "required": false, "type": "string" },
+        { "flag": "--output-dir", "prompt": "Output directory (blank = shared SA\\Outputs\\sa-effectiveness-scorecard)", "required": false, "type": "path" }
+      ]
+    },
+    {
+      "id": "weekly-sa-reports-scheduler",
+      "name": "Weekly SA Reports Scheduler",
+      "description": "Register/update a Windows scheduled task that runs techpass-aging, sarb-sla-report, sarb-sla-reasoning, and sa-kpi-heatmap every week against the newest files in a shared inputs folder.",
+      "folder": "weekly-sa-reports-scheduler",
+      "mode": "script",
+      "runner": "powershell",
+      "entry": "scripts\\Setup-WeeklySchedule.ps1",
+      "outputs": "A Windows scheduled task plus an inputs/outputs/logs folder structure under the chosen reports root. Each scheduled run writes a dated outputs subfolder with all four skills' normal output files.",
+      "params": [
+        { "flag": "-ReportsRoot", "prompt": "Folder to use as the reports root (created if missing)", "required": true, "type": "path" },
+        { "flag": "-DayOfWeek", "prompt": "Day of week to run (MON/TUE/WED/THU/FRI/SAT/SUN, blank = WED)", "required": false, "type": "string" },
+        { "flag": "-Time", "prompt": "Time of day to run, 24h HH:MM (blank = 08:15)", "required": false, "type": "string" },
+        { "flag": "-RunNow", "prompt": "Run the report batch immediately to validate? (y/N)", "required": false, "type": "switch" }
+      ]
+    },
+    {
+      "id": "techpass-aging",
+      "name": "TechPass Aging Report",
+      "description": "Generate an interactive ticket-aging chart, summary CSV, and one-slide PowerPoint from a TechPass/ticket Excel export.",
+      "folder": "techpass-aging",
+      "mode": "script",
+      "runner": "python",
+      "entry": "techpass_aging_chart.py",
+      "outputs": "One-slide PowerPoint with an aging chart image, plus a CSV summary of ticket counts by aging week.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the Excel workbook (blank = newest .xlsx in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "--as-of", "prompt": "As-of date YYYY-MM-DD (blank = today)", "required": false, "type": "string" }
+      ]
+    },
+    {
+      "id": "sarb-due-date-gantt",
+      "name": "SARB Due Date Heatmap",
+      "description": "Generate an interactive Solution-Architect-by-Month heatmap of SARB Due Dates (Aug 2026-2027), with plain counts and overdue cells outlined in orange.",
+      "folder": "sarb-due-date-gantt",
+      "mode": "script",
+      "runner": "python",
+      "entry": "sarb_due_date_gantt.py",
+      "outputs": "SARB_Due_Dates_Heatmap.html — SA x Month grid of due-item counts, overdue items outlined in orange, hover detail, and a monthly total bar.",
+      "params": [
+        { "flag": "--input", "prompt": "Path to the CSV/Excel export (blank = newest matching file in shared SA\\Inputs)", "required": false, "type": "path" },
+        { "flag": "--as-of", "prompt": "As-of date YYYY-MM-DD (blank = today)", "required": false, "type": "string" },
+        { "flag": "--include-approved", "prompt": "Include items that already have a SARB Rating? (y/N)", "required": false, "type": "switch" },
+        { "flag": "--output-dir", "prompt": "Output directory (blank = shared SA\\Outputs\\sarb-due-date-gantt)", "required": false, "type": "path" }
+      ]
+    },
+    {
+      "id": "divestiture-separation-plan",
+      "name": "Divestiture Separation Plan",
+      "description": "Generate an application separation plan by combining a disposition inventory with an application integration catalog.",
+      "folder": "divestiture-separation-plan",
+      "mode": "script",
+      "runner": "python",
+      "entry": "divestiture_separation_plan.py",
+      "outputs": "Excel separation plan and executive PowerPoint overview with per-application integration details.",
+      "params": [
+        { "flag": "--inventory", "prompt": "Path to IT Application Inventory workbook", "required": true, "type": "path" },
+        { "flag": "--integrations", "prompt": "Path to Application Integration catalog workbook", "required": true, "type": "path" },
+        { "flag": "--output-dir", "prompt": "Output directory (blank = shared SA\\Outputs\\divestiture-separation-plan)", "required": false, "type": "path" },
+        { "flag": "--excel-output", "prompt": "Excel output filename (optional)", "required": false, "type": "string" },
+        { "flag": "--ppt-output", "prompt": "PowerPoint output filename (optional)", "required": false, "type": "string" }
+      ]
+    }
+  ]
+}

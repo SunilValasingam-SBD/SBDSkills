@@ -1,0 +1,25 @@
+*.zip
+__pycache__/
+*.pyc
+Outputs/
+outputs/
+*.tmp
+~$*
+
+# Data/output files (skill code & docs only in this repo)
+*.csv
+*.xlsx
+*.xls
+run-*/
+!**/sample*.csv
+!**/sample*.xlsx
+
+# Generated output artifacts (keep code/docs only; not static web assets)
+sa-engagement-analysis/*.html
+sa-kpi-heatmap/*.html
+sa-workload-dashboard/*.html
+sarb-sla-reasoning/*.html
+sarb-sla-report/*.html
+techpass-aging/*.html
+sarb-sla-report/*.json
+*.pptx

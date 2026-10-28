@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Picker</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>Skills</h1>
+      <div id="skill-list" class="skill-list"></div>
+    </aside>
+
+    <main class="detail">
+      <div id="empty-state" class="empty-state">Select a skill on the left to get started.</div>
+
+      <div id="skill-detail" class="skill-detail" style="display:none;">
+        <header>
+          <h2 id="skill-name"></h2>
+          <span id="skill-mode" class="badge"></span>
+        </header>
+        <p id="skill-description" class="description"></p>
+        <div id="skill-note" class="note" style="display:none;"></div>
+        <div class="results-box">
+          <strong>Results:</strong> <span id="skill-results"></span>
+        </div>
+
+        <h3>Inputs</h3>
+        <form id="params-form" class="params-form"></form>
+
+        <div class="actions">
+          <button id="run-btn" class="primary">Run Skill</button>
+          <button id="copy-btn" class="secondary" style="display:none;">Copy Chat Instruction</button>
+          <span id="spinner" class="spinner" style="display:none;">Running…</span>
+        </div>
+
+        <div id="output-section" style="display:none;">
+          <h3>Output</h3>
+          <pre id="output-log" class="output-log"></pre>
+          <div id="result-files" class="result-files"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

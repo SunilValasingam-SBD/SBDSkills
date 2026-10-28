@@ -1,0 +1,4 @@
+openpyxl
+python-pptx
+Pillow
+plotly
